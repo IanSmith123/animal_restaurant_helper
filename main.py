@@ -87,5 +87,5 @@ def multi_thread_scheduler():
 
 if __name__ == '__main__':
     screen_width, screen_height = get_screen_size()
-    # main_scheduler()
+    # single_thread_main_scheduler()
     multi_thread_scheduler()

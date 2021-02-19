@@ -56,7 +56,7 @@ def send_ad_inf():
         send_ad()
 
 
-def touch_consume_info():
+def touch_consume_inf():
     while True:
         touch_consumer()
         time.sleep(1)
@@ -81,7 +81,7 @@ def multi_thread_scheduler():
     for i in range(pool_size - 1):
         pool.submit(send_ad_inf)
         time.sleep(1)
-    pool.submit(touch_consume_info)
+    pool.submit(touch_consume_inf)
     print("the end")
 
 

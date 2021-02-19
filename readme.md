@@ -5,5 +5,4 @@ animal restaurant helper
 
 usage:
 1. connect to android phone with ADB successfully
-2. set screen resolution
 2. `python main.py`

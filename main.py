@@ -15,7 +15,7 @@ def get_screen_size():
     return width, height
 
 
-def send_ad():
+def touch_promo():
     screen_x_percent = 0.9
     screen_y_percent = 0.92
     run_adb_tap(screen_x_percent, screen_y_percent)
@@ -37,6 +37,16 @@ def touch_consumer():
     run_adb_tap(x6, y6, )
 
 
+def touch_magic():
+    x, y = 0.2, 0.9
+    run_adb_tap(x, y, 1000)
+
+
+def touch_cod():
+    x1, y1 = 0.1, 0.6
+    run_adb_tap(x1,y1)
+
+
 def run_adb_tap(screen_x_percent, screen_y_percent, duration=1):
     """
     adb shell input tap x y duration
@@ -48,12 +58,12 @@ def run_adb_tap(screen_x_percent, screen_y_percent, duration=1):
     os.system(cmd)
 
 
-def send_ad_inf():
+def touch_promo_inf():
     count = 0
     while True:
         count += 1
         print("\rtouch count: {}".format(count), end='')
-        send_ad()
+        touch_promo()
 
 
 def touch_consume_inf():
@@ -62,12 +72,22 @@ def touch_consume_inf():
         time.sleep(1)
 
 
+def touch_magic_inf():
+    while True:
+        touch_magic()
+        time.sleep(10)
+
+
+def touch_cod_inf():
+    pass
+
+
 def single_thread_main_scheduler():
     count = 0
     while True:
         count += 1
         print("\rtouch count: {}".format(count), end='')
-        send_ad()
+        touch_promo()
         if count % 15 == 0:
             time.sleep(0.2)
             touch_consumer()
@@ -76,12 +96,13 @@ def single_thread_main_scheduler():
 
 
 def multi_thread_scheduler():
-    pool_size = 5
+    pool_size = 8
     pool = ThreadPoolExecutor(pool_size)
     for i in range(pool_size - 1):
-        pool.submit(send_ad_inf)
+        pool.submit(touch_promo_inf)
         time.sleep(1)
     pool.submit(touch_consume_inf)
+    pool.submit(touch_magic_inf)
     print("the end")
 
 
@@ -89,3 +110,4 @@ if __name__ == '__main__':
     screen_width, screen_height = get_screen_size()
     # single_thread_main_scheduler()
     multi_thread_scheduler()
+    # touch_magic()

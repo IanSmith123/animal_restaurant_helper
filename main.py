@@ -2,6 +2,7 @@ import re
 import os
 import time
 import subprocess
+from random import randint
 from concurrent.futures import ThreadPoolExecutor
 
 
@@ -38,42 +39,64 @@ def touch_consumer():
 
 
 def touch_magic():
-    x, y = 0.2, 0.9
+    x, y = 0.2, 0.8
     run_adb_tap(x, y, 1000)
+    # touch whole screen ok
+    x, y = 0.7, 0.65
+    run_adb_tap(x, y, 1000)
+    # touch suspicious_behavior
+    x, y = 0.5, 0.5
+    run_adb_tap(x, y)
+    # touch one hour detect
+    x, y = 0.5, 0.65
+    run_adb_tap(x, y)
+    # touch rascal
+    x, y = 0.15, 0.9
+    run_adb_tap(x, y)
 
 
 def touch_cod():
     x1, y1 = 0.1, 0.6
-    run_adb_tap(x1,y1)
+    run_adb_tap(x1, y1)
 
 
 def run_adb_tap(screen_x_percent, screen_y_percent, duration=1):
     """
     adb shell input tap x y duration
     """
-    cmd = 'adb shell input tap {} {} {}'.format(int(screen_width * screen_x_percent),
-                                                int(screen_height * screen_y_percent), duration)
+    pos_x = screen_width * screen_x_percent
+    pos_y = screen_height * screen_y_percent
+    pos_x = pos_x * (1 + randint(0, 20) / 10000)
+    pos_y = pos_y * (1 + randint(0, 20) / 10000)
+    pos_x = int(pos_x)
+    pos_y = int(pos_y)
+    print(pos_x, pos_y)
+    cmd = 'adb shell input tap {} {} {}'.format(pos_x, pos_y, duration)
+    # cmd = 'adb shell input tap {} {} {}'.format(int(screen_width * screen_x_percent),
+    #                                             int(screen_height * screen_y_percent), duration)
 
     # print(cmd)
     os.system(cmd)
 
 
-def touch_promo_inf():
+def touch_promo_inf(thread_num):
     count = 0
     while True:
         count += 1
-        print("\rtouch count: {}".format(count), end='')
+        print("thread: {}, click promo count: {}".format(thread_num, count), )
         touch_promo()
 
 
 def touch_consume_inf():
     while True:
+        print("collect consume recipe")
         touch_consumer()
         time.sleep(1)
 
 
 def touch_magic_inf():
     while True:
+        print("clean screen pop....")
         touch_magic()
         time.sleep(10)
 
@@ -98,8 +121,8 @@ def single_thread_main_scheduler():
 def multi_thread_scheduler():
     pool_size = 8
     pool = ThreadPoolExecutor(pool_size)
-    for i in range(pool_size - 1):
-        pool.submit(touch_promo_inf)
+    for i in range(pool_size - 2):
+        pool.submit(touch_promo_inf, i)
         time.sleep(1)
     pool.submit(touch_consume_inf)
     pool.submit(touch_magic_inf)
